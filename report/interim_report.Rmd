@@ -6,4 +6,27 @@ date: "`r format(Sys.time(), '%d %B %Y')`"
 output: html_document
 ---
 
-#  
+#  Interim Report 
+
+## Current Progress
+
+The following tasks have been completed 
+
+1. Dataset downloaded from NOAA website
+  + Snowfall data from 3 weather stations in the Chicago metro area - O'Hare Int'l Airport,Midway Int'l Airport, and Park Forest
+  + Data runs from 1960-07-01 to 2020-06-30
+2. Snowfall data has been cleaned and formatted
+  + Analysis of Missingness performed (< 1\% for Midway and O'Hare around 8\% for Park Forest) 
+3. Basic EDA
+  + Plots 
+  + Summary Stats
+  
+## Next Items
+
+1. Investigate whether missingness is an issue 
+  + If it is an issue look at imputation methods
+2. Begin implementation of authors methodology
+3. Add in a spatial plot of Chicago to help illustrate spatial distribution of data
+
+
+  
