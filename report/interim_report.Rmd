@@ -20,16 +20,18 @@ The following tasks have been completed
 3. Basic EDA
   + Plots 
   + Summary Stats
-4. Model Implementation
-  + Built function to find MLE of Model 1 from authors paper - Separate model for each station with possible common trend
-  + Function computes return levels as well
+4. Block Maxima GEV Models Implemented Using authors methods as template
+  + Both stationary and trend non-stationary implemented
+  + Functions compute return levels as well based off of authors code
   
 ## Next Items
 
 1. Investigate whether missingness is an issue 
   + If it is an issue look at imputation methods
+  + Primarily an issue for Park Forest station
 2. Add in a spatial plot of Chicago to help illustrate spatial distribution of data
 3. Implement other GEV models/ Study GP models (do we need to implement GP models to have an adequate project?)
+  + Could improve on code substantially, possibly even unify into one function (kind of a pain though)
 4. Implement code for Smith's Correction 
 5. Bootstrapping code
 

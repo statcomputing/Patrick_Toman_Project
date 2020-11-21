@@ -1,6 +1,7 @@
 ########################################################################################
-##### Name: gev_fit.R                                                              #####
-#####  Description: Exploratory Data Analysis for Chicago Snowfall Data            #####
+##### Name: GEV_model1.R                                                              
+##### Description: GEV Model 1 from paper
+##### Purpose: Function to obtain MLEs of model 1 GEV parameters via nlm/optim  
 ########################################################################################
 
 data <- split(annual_max_snowf_df,f=annual_max_snowf_df$name)
@@ -22,6 +23,8 @@ time_list_set <- list(year_set,year_set,year_set)
 names(time_list_set) <- names(data)
 
 model1_gev_nlme <- function(snow_list,time_list,stationary = T){
+  
+  num_stations <- length(snow_list)
   
   if(!stationary){
     
@@ -138,13 +141,16 @@ model1_gev_nlme <- function(snow_list,time_list,stationary = T){
     
   }
   
-  return_mat <- matrix(0,length(snow_list),length(year_return))
+  return_mat <- matrix(0,num_stations,length(year_return))
   
-  return_mat[1,] <- fit$estimate[1] + mu_t*(year_return + n.years)/10 - (fit$estimate[4]/fit$estimate[5])*(1-(-log(1-(1/year_return)))^(-fit$estimate[5]))
+  return_mat[1,] <- (fit$estimate[1] + mu_t*(year_return + n.years)/10 - 
+                       (fit$estimate[4]/fit$estimate[5])*(1-(-log(1-(1/year_return)))^(-fit$estimate[5])))
   
-  return_mat[2,] <- fit$estimate[2] + mu_t*(year_return + n.years)/10 - (fit$estimate[4]/fit$estimate[5])*(1-(-log(1-(1/year_return)))^(-fit$estimate[5]))
+  return_mat[2,] <- (fit$estimate[2] + mu_t*(year_return + n.years)/10 - 
+                       (fit$estimate[4]/fit$estimate[5])*(1-(-log(1-(1/year_return)))^(-fit$estimate[5])))
   
-  return_mat[3,] <- fit$estimate[3] + mu_t*(year_return + n.years)/10 - (fit$estimate[4]/fit$estimate[5])*(1-(-log(1-(1/year_return)))^(-fit$estimate[5]))
+  return_mat[3,] <- (fit$estimate[3] + mu_t*(year_return + n.years)/10 - 
+                       (fit$estimate[4]/fit$estimate[5])*(1-(-log(1-(1/year_return)))^(-fit$estimate[5])))
   
   return(list(returns=return_mat, trend=mu_t, output=fit))
 
