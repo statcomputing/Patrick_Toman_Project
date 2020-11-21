@@ -20,13 +20,18 @@ The following tasks have been completed
 3. Basic EDA
   + Plots 
   + Summary Stats
+4. Model Implementation
+  + Built function to find MLE of Model 1 from authors paper - Separate model for each station with possible common trend
+  + Function computes return levels as well
   
 ## Next Items
 
 1. Investigate whether missingness is an issue 
   + If it is an issue look at imputation methods
-2. Begin implementation of authors methodology
-3. Add in a spatial plot of Chicago to help illustrate spatial distribution of data
+2. Add in a spatial plot of Chicago to help illustrate spatial distribution of data
+3. Implement other GEV models/ Study GP models (do we need to implement GP models to have an adequate project?)
+4. Implement code for Smith's Correction 
+5. Bootstrapping code
 
 
   

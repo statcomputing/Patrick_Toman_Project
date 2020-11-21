@@ -2,6 +2,7 @@
 ##### Name: EDA.R                                                                  #####
 #####  Description: Exploratory Data Analysis for Chicago Snowfall Data            #####
 ########################################################################################
+
 rm(list=ls())
 library(tidyverse)
 library(lubridate)
@@ -49,10 +50,9 @@ ann_max_snowfall_plt <- annual_max_snowf_df %>%
   xlab('Date')+ylab('Maximum Snowfall (inches)')+ ggtitle('Annual Maxes')+
   facet_wrap(~name,nrow = 3,scales = 'free_y')
 
-#ann_max_snowfall_plt
+ann_max_snowfall_plt
 #missing_plt
 #snowfall_plt
-
 
 snowfall_df %>% 
   select(-snowdep) %>% 
@@ -106,11 +106,10 @@ for(i in 1:length(station_names)){
   
 }
 
-#########################################################################
+########################################################################################
 # Required Data based on authors data file layout 
 
 # Annual maxes 
-
 annmax_midway <- annual_max_snowf_df %>% 
   filter(name=='Midway') %>% 
   select(ann_max_snowf)
@@ -155,19 +154,39 @@ nonzero_snow_ohare <- unlist(snow_events_list$Ohare)
 
 nonzero_snow_parkforest <- unlist(snow_events_list$ParkForest)
 
-# Season 
-# Need to define intervals for this - recall a snow year runs from July 01 to June 30
-date_seq <- seq.Date(from = as.Date('1960-07-01'),to =as.Date('2020-06-30'),by='year')
+# Seasons 
 
-make_season <- function(df,year_start=1960,year_end=2020){
+# Function below gives season variables as authors defined variable in their code
 
+make_season <- function(X){
+
+  season_dates <- as.Date(names(unlist(X)))
+  
   date_seq <- seq.Date(from = as.Date('1960-07-01'),to =as.Date('2020-06-30'),by='year')
     
   nseasons <- length(date_seq)
   
-  snow_year_start <- '07-01'
+  season_tmp <- c()
   
-  snow_year_end <- '06-30'
+  for(i in 1:(nseasons-1)){
+    
+    date_interval_tmp <- c(date_seq[i],date_seq[i+1])
+    
+    season_inds <- which((season_dates >= date_interval_tmp[1]) & (season_dates < date_interval_tmp[2]))  
+    
+    year_tmp <- rep(as.numeric(year(date_interval_tmp[1])),length(season_inds))
+    
+    season_tmp <- append(season_tmp,year_tmp)
+    
+  }
   
+  return(season_tmp)
   
 }
+
+season_midway <- make_season(snow_events_list$Midway)
+
+season_ohare <- make_season(snow_events_list$Ohare)
+
+season_parkforest <- make_season(snow_events_list$ParkForest)
+
