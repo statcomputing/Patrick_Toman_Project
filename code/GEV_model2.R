@@ -4,7 +4,6 @@
 ##### Purpose: Function to obtain MLEs of model 2 GEV parameters via nlm/optim  
 ########################################################################################
 
-
 data <- split(annual_max_snowf_df,f=annual_max_snowf_df$name)
 
 n.years <- nrow(annmax_midway)
