@@ -152,15 +152,15 @@ model1_gev_smith <- function(model_fit,snow_list,stationary=T){
   
   se_new <- sqrt(diag(new_hessian))
   
-  return(list(old=se_original, new=se_new,new_pars = new_par_matrix))
+  return(list(old=se_original, new=se_new))
   
   
 }
 
-# Testing functionality - seems to work 
+### Run Smith's Correction
 
-#smith_test <- model1_gev_smith(model_fit = nonstationary_mod1$output,snow_list = snow_list_set,stationary = F)
-#smith_test
+stationary_mod1_sc <- model1_gev_smith(model_fit = stationary_mod1$output,snow_list = snow_list_set,stationary = T)
+nonstationary_mod1_sc <- model1_gev_smith(model_fit = nonstationary_mod1$output,snow_list = snow_list_set,stationary = F)
 
 ########################################################################################
 ### Smith Correction for GEV Model 2 
@@ -315,9 +315,10 @@ model2_gev_smith <- function(model_fit,snow_list,stationary=T){
 }
 
 
-# Test for model 2 
+### Run Smith's Correction
 
-#stationary_mod2_sc <- model2_gev_smith(stationary_mod2$output,snow_list_set,stationary = T)
+#stationary_mod2_sc <- model1_gev_smith(model_fit = stationary_mod2$output,snow_list = snow_list_set,stationary = T)
+#nonstationary_mod2_sc <- model1_gev_smith(model_fit = nonstationary_mod2$output,snow_list = snow_list_set,stationary = F)
 
 ########################################################################################
 ### Smith Correction for GEV Model 3 
@@ -454,12 +455,12 @@ model3_gev_smith <- function(model_fit,snow_list,stationary=T){
   se_new <- sqrt(diag(new_hessian))
   
   return(list(old=se_original, new=se_new))
-  
-  
+
 }
 
 
-# Tests for models 
+
+### Run Smith's Correction
 
 #stationary_mod3_sc <- model3_gev_smith(model_fit = stationary_mod3$output,snow_list_set,stationary = T)
 #nonstationary_mod3_sc <- model3_gev_smith(model_fit = nonstationary_mod3$output,snow_list_set,stationary = F)

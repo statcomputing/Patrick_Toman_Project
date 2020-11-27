@@ -2,7 +2,6 @@
 ##### Name: EDA.R                                                                  #####
 #####  Description: Exploratory Data Analysis for Chicago Snowfall Data            #####
 ########################################################################################
-
 rm(list=ls())
 library(tidyverse)
 library(lubridate)
