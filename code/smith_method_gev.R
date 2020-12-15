@@ -5,6 +5,22 @@
 ####           spatial and temporal correlations between stations   
 ########################################################################################
 
+AICc <- function(gev_mod,snow_data){
+  
+  ll <- gev_mod$output$minimum
+  
+  n <- length(unlist(snow_data))
+  
+  p <- length(gev_mod$output$estimate)
+  
+  aicc <- 2*(p - ll + (p*(p+1)) / (n-p-1))  
+  
+  return(aicc)
+  
+}
+
+
+
 model1_gev_smith <- function(model_fit,snow_list,stationary=T){
 
   H <- model_fit$hessian
@@ -65,7 +81,7 @@ model1_gev_smith <- function(model_fit,snow_list,stationary=T){
     
     diff_s3 <- snow_list[[3]][i]- mu_s3_mle_tmp - trend_mle*c(1:num_years/10)[i]
     
-    diff<-c(diff_s1, diff_s2, diff_s3)
+    diff <- c(diff_s1, diff_s2, diff_s3)
     
     diff <- diff[!is.na(diff)]
     

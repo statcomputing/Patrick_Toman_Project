@@ -159,3 +159,9 @@ model1_gev_nlme <- function(snow_list,time_list,stationary = T){
 stationary_mod1 <- model1_gev_nlme(snow_list=snow_list_set)
 
 nonstationary_mod1 <- model1_gev_nlme(snow_list_set,time_list_set,stationary = F)
+
+stationary_mod1_AICc <- AICc(stationary_mod1,snow_list_set)
+nonstationary_mod1_AICc <- AICc(nonstationary_mod1,snow_list_set)
+
+stationary_mod1_AICc
+nonstationary_mod1_AICc

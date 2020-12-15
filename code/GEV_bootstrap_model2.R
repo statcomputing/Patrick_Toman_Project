@@ -4,6 +4,10 @@
 ##### Purpose: boostrap of return levels for gev return levels    
 ########################################################################################
 
+########################################################################################
+#### Bootsrap for Model 2
+########################################################################################
+
 library(quantreg)
 library(foreach)
 library(doParallel)
@@ -53,8 +57,8 @@ moving_block <- function(size,num_total,seed) {
   index <- numeric()
   
   for(i in 1:blocks_out) {
-  
-      index[(1+size*(i-1)):(size*i)] <- seq(from=block_index[i],to=block_index[i]+size-1)
+    
+    index[(1+size*(i-1)):(size*i)] <- seq(from=block_index[i],to=block_index[i]+size-1)
   }
   
   index
@@ -91,26 +95,26 @@ if(gev){
     # This resamples years for non-stationary GEV case
     
     boot_year_midway <- index_midway/10
-      
+    
     boot_year_ohare <- index_ohare/10
-      
+    
     boot_year_parkforest <- index_parkforest/10
-      
+    
     boot_list <- list(boot_year_midway,boot_year_ohare,boot_year_parkforest)
-      
+    
     names(boot_list) <- names(snow_list_set)
-      
+    
     
     # Calculating bootstrap return levels based on settings
     if(stationary){
       
-      return_boot <- model1_gev_nlme(resample_list,boot_list,stationary = T)
+      return_boot <- model2_gev_nlme(resample_list,boot_list,stationary = T)
       
-      }else{
-  
-        return_boot <- model1_gev_nlme(resample_list,boot_list,stationary = F) 
-        
-      }
+    }else{
+      
+      return_boot <- model2_gev_nlme(resample_list,boot_list,stationary = F) 
+      
+    }
     
   }
   
@@ -143,11 +147,11 @@ zBC <- matrix(0,num_stations,num_return_years)
 
 for(i in 1:num_return_years){
   
-  zBC[1,i] <- qnorm(sum(return_boot_midway[,i] < stationary_mod1$returns[1,i])/iteration,mean=0,sd=1)
+  zBC[1,i] <- qnorm(sum(return_boot_midway[,i] < stationary_mod2$returns[1,i])/iteration,mean=0,sd=1)
   
-  zBC[2,i] <- qnorm(sum(return_boot_ohare[,i] < stationary_mod1$returns[2,i])/iteration,mean=0,sd=1)
+  zBC[2,i] <- qnorm(sum(return_boot_ohare[,i] < stationary_mod2$returns[2,i])/iteration,mean=0,sd=1)
   
-  zBC[3,i] <- qnorm(sum(return_boot_parkforest[,i] < stationary_mod1$returns[3,i])/iteration,mean=0,sd=1)
+  zBC[3,i] <- qnorm(sum(return_boot_parkforest[,i] < stationary_mod2$returns[3,i])/iteration,mean=0,sd=1)
   
 }
 
@@ -173,14 +177,14 @@ if(gev){
     
     if(stationary){
       
-      return_jack <- model1_gev_nlme(jack_sample_list,jack_year,stationary = T)
-    
-      }else{
-        
-        return.jack <- model1_gev_nlme(jack_sample_list,jack_year,stationary = F)
-        
-      }
+      return_jack <- model2_gev_nlme(jack_sample_list,jack_year,stationary = T)
+      
+    }else{
+      
+      return.jack <- model2_gev_nlme(jack_sample_list,jack_year,stationary = F)
+      
     }
+  }
 } 
 
 
@@ -203,7 +207,7 @@ for(i in 1:num_years){
   cA <- matrix(0,num_stations,num_return_years)
   
   for(i in 1:num_return_years) {
-  
+    
     summation_midway <- return_jack_midway[,i] - mean(return_jack_midway[,i])
     
     summation_ohare <- return_jack_ohare[,i] - mean(return_jack_ohare[,i])
@@ -235,9 +239,9 @@ quantile_BCa_parkforest <- cbind(pnorm(lower[3,]),pnorm(upper[3,]))
 
 
 ### Computing Confidence Intervals
-CI <- matrix(0,20,3*2+1)
+CI <- matrix(0,15,7)
 
-CI[,1] <- c(1,year_return,2,year_return,3,year_return,4,year_return)
+CI[,1] <- c(1,year_return,2,year_return,3,year_return)
 
 
 # For each CI, left: (alpha/2)%, middle: median, right: (1-alpha/2)%
@@ -259,7 +263,7 @@ for(i in 1:num_return_years){
   CI[1+i,7] <- quantile(return_boot_midway[,i], quantile_BCa_midway[i,2])
   
   # Results for Ohare 
-
+  
   CI[6+i,2] <- quantile(return_boot_ohare[,i], (1-significance)/2)
   
   CI[6+i,3] <- quantile(return_boot_ohare[,i], 0.5)
@@ -299,4 +303,5 @@ stopCluster(cl)
 hist(trends_boot)
 c(quantile(trends_boot, c((1-significance)/2,1-(1-significance)/2)))
 
+CI_list <- list('Midway' = CI[2:5,], 'Ohare' = CI[7:10,], 'ParkForest' = CI[12:15,])
 

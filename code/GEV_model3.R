@@ -5,7 +5,6 @@
 #####          particular function we fit the model to all of the same variables
 ########################################################################################
 
-
 data <- split(annual_max_snowf_df,f=annual_max_snowf_df$name)
 
 n.years <- nrow(annmax_midway)
@@ -140,6 +139,9 @@ stationary_mod3 <- model3_gev_nlme(snow_list=snow_list_set)
 
 nonstationary_mod3 <- model3_gev_nlme(snow_list_set,time_list_set,stationary = F)
 
-stationary_mod3
 
-nonstationary_mod3
+stationary_mod3_AICc <- AICc(stationary_mod3,snow_list_set)
+nonstationary_mod3_AICc <- AICc(nonstationary_mod3,snow_list_set)
+
+stationary_mod3_AICc
+nonstationary_mod3_AICc

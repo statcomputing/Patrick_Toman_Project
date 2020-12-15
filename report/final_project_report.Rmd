@@ -1,0 +1,14 @@
+---
+title: "Trend and Return Levels for Chicago Snowfall"
+author: Patrick Toman^[<patrick.toman@uconn.edu>; Ph.D. student at Department of Statistics,
+  University of Connecticut.]
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: pdf_document
+---
+
+# Introduction 
+
+Extreme weather events have the ability to drastically impact society. 
+
+
+# 

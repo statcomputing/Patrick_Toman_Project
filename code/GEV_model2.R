@@ -23,11 +23,11 @@ time_list_set <- list(year_set,year_set,year_set)
 names(time_list_set) <- names(data)
 
 model2_gev_nlme <- function(snow_list,time_list,stationary = T,
-                            groups = list('g1'=c(1,2),'g2'=c(3))){
+                            groups = list('g1'=c(1),'g2'=c(2,3))){
   
   num_stations <- length(snow_list)
   
-  g1_name <- paste0(names(snow_list)[groups$g1[1]],',',names(snow_list)[groups$g1[2]])
+  g1_name <- paste0(names(snow_list)[groups$g1[1]])
   
   g2_name <- names(snow_list)[groups$g2]
   
@@ -155,5 +155,9 @@ stationary_mod2 <- model2_gev_nlme(snow_list=snow_list_set)
 
 nonstationary_mod2 <- model2_gev_nlme(snow_list_set,time_list_set,stationary = F)
 
-nonstationary_mod2
+stationary_mod2_AICc <- AICc(stationary_mod2,snow_list_set)
+nonstationary_mod2_AICc <- AICc(nonstationary_mod2,snow_list_set)
+
+stationary_mod2_AICc
+nonstationary_mod2_AICc
 
