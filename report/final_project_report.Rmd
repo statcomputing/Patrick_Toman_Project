@@ -12,17 +12,18 @@ geometry: margin = 2cm
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = F,message = F,fig.height = 5,fig.width = 4,fig.align = 'center',dpi=300)
+knitr::opts_chunk$set(echo = F,message = F,fig.height = 5,fig.width = 4,fig.align = 'center',dpi = 300)
 ```
 
 ```{r,echo=FALSE,message=FALSE}
-rm(list=ls())
 library(tidyverse)
+library(lubridate)
 
 data_dir <- "D:/Fall2020/StatComputing/Assignments/Patrick_Toman_Project/data/"
 
 snowfall_df <- read_csv(paste0(data_dir,'final_snowfall_data.csv'))
 
+snowfall_list <- split(snowfall_df,f = snowfall_df$name)
 
 ```
 
@@ -96,8 +97,15 @@ Invoking the invariance property of MLEs, we can solve for the MLE of the return
 
 ## Smith's Method for Spatial and Temporal Dependence
 
-Snowfall data collected from stations close in proximity to one another will inevtiably exhibit spatial correlation. To account for this spatial correlation in our standard errors, we can employ a method devised by Smith \textcolor{red}{cite Smith} where MLE estimates are attained under the standard IID assumption and then standard errors are corrected in a post-hoc fashion to account for spatial dependence. \textcolor{red}{write in Smith's method for our context?}. Furthermore, for block maxima methods, temporal depdence is typically not an issue since extreme snowfall events tend to be separated by a large gap of time. Indeed, we find that auto-correlations between consectutive years for all three stations are quite small \textcolor{red}{put in results here}. 
+Snowfall data collected from stations close in proximity to one another will inevtiably exhibit spatial correlation. To account for this spatial correlation in our standard errors, we can employ a method devised by Smith \textcolor{red}{cite Smith} where MLE estimates are attained under the standard IID assumption and then standard errors are corrected in a post-hoc fashion to account for spatial dependence. \textcolor{red}{write in Smith's method for our context?}. Furthermore, for block maxima methods, temporal depdence is typically not an issue since extreme snowfall events tend to be separated by a large gap of time. Indeed, we find that auto-correlations between consectutive years for all three stations are quite small and statistically insignificant as shown by the ACF plots below. 
 
+```{r,fig.height = 3,fig.width = 8}
+par(mfrow = c(1,3))
+plot(acf(snowfall_list$Midway$ann_max_snowf,plot = F),main = 'ACF - Midway')
+plot(acf(snowfall_list$Ohare$ann_max_snowf,plot = F),main = "ACF - O'Hare")
+plot(acf(snowfall_list$ParkForest$ann_max_snowf,plot = F),main = 'ACF - Park Forest')
+
+```
 
 ## Bootstrap CI for Return Levels 
 
@@ -130,7 +138,7 @@ Initially, we build a full model in which we assume that each station has its ow
 
 ## Stationary Models 
 
-Having established that $\sigma$ and $\xi$ should be common to all three stations, three different stationary models are fit to the data in which we vary $\mu_s$ by iteratively merging the  two closest $\mu_s$'s. Because we anticipate spatial dependence in the data, we correct the standard errors of each using Smith's method. \textcolor{red}{put in a table of results} 
+Having established that $\sigma$ and $\xi$ should be common to all three stations, three different stationary models are fit to the data in which we vary $\mu_s$ by iteratively merging the two closest $\mu_s$'s. Because we anticipate spatial dependence in the data, we correct the standard errors of each using Smith's method. \textcolor{red}{put in a table of results} 
 
 ## Stationary Models 
 

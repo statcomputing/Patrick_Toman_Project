@@ -1,28 +1,18 @@
 ########################################################################################
 ##### Name: smith_method_gev.R                                                              
-##### Description: My implementation of Smith's Method for GEV models
-##### Purpose: Smith's method adjust the standard errors of MLE fit to account for 
-####           spatial and temporal correlations between stations   
+##### Description: Smith's method adjust the standard errors of MLE fit to account for 
+#####              spatial correlations between stations   
 ########################################################################################
 
-AICc <- function(gev_mod,snow_data){
-  
-  ll <- gev_mod$output$minimum
-  
-  n <- length(unlist(snow_data))
-  
-  p <- length(gev_mod$output$estimate)
-  
-  aicc <- 2*(p - ll + (p*(p+1)) / (n-p-1))  
-  
-  return(aicc)
-  
-}
-
+########################################################################################
+### Smith Correction for Reduced GEV Model 1
+########################################################################################
 
 
 model1_gev_smith <- function(model_fit,snow_list,stationary=T){
 
+  model_fit <- model_fit$output
+  
   H <- model_fit$hessian
   
   num_years <- length(snow_list[[1]])
@@ -173,22 +163,14 @@ model1_gev_smith <- function(model_fit,snow_list,stationary=T){
   
 }
 
-### Run Smith's Correction
-
-stationary_mod1_sc <- model1_gev_smith(model_fit = stationary_mod1$output,snow_list = snow_list_set,stationary = T)
-nonstationary_mod1_sc <- model1_gev_smith(model_fit = nonstationary_mod1$output,snow_list = snow_list_set,stationary = F)
-
 ########################################################################################
-### Smith Correction for GEV Model 2 
-###
+### Smith Correction for Reduced GEV Model 2 
 ########################################################################################
-
-# this is still wrong, need to do it properly
-# only thing that needs to change really is the combining of partial derivatives 
-# otherwise, the same as smith's correction for any model 1
 
 
 model2_gev_smith <- function(model_fit,snow_list,stationary=T){
+  
+  model_fit <- model_fit$output
   
   H <- model_fit$hessian
   
@@ -331,17 +313,13 @@ model2_gev_smith <- function(model_fit,snow_list,stationary=T){
 }
 
 
-### Run Smith's Correction
-
-#stationary_mod2_sc <- model1_gev_smith(model_fit = stationary_mod2$output,snow_list = snow_list_set,stationary = T)
-#nonstationary_mod2_sc <- model1_gev_smith(model_fit = nonstationary_mod2$output,snow_list = snow_list_set,stationary = F)
-
 ########################################################################################
-### Smith Correction for GEV Model 3 
-###
+### Smith Correction for Reduced GEV Model 3 
 ########################################################################################
 
 model3_gev_smith <- function(model_fit,snow_list,stationary=T){
+  
+  model_fit <- model_fit$output
   
   H <- model_fit$hessian
   
@@ -474,9 +452,3 @@ model3_gev_smith <- function(model_fit,snow_list,stationary=T){
 
 }
 
-
-
-### Run Smith's Correction
-
-#stationary_mod3_sc <- model3_gev_smith(model_fit = stationary_mod3$output,snow_list_set,stationary = T)
-#nonstationary_mod3_sc <- model3_gev_smith(model_fit = nonstationary_mod3$output,snow_list_set,stationary = F)
