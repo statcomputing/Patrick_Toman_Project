@@ -9,17 +9,25 @@ library(lubridate)
 snowfall_df <- read_csv("data/SnowfallCHI_v5.csv")
 
 # Summary Statistics
-
 snowfall_df %>% 
   group_by(station,name) %>% 
   summarise(min_date = min(date),max_date = max(date),
             num_obs = n())
 
+snowfall_df %>% 
+  group_by(station,name) %>% 
+  filter(snowf > 0 ) %>% 
+  summarise(min_date = min(date),max_date = max(date),
+            num_obs = n()) -> snow_days
+snow_days
 
 snowfall_df %>% 
-  group_by(station,name,month(date)) %>% 
+  group_by(station,name) %>% 
   summarise(ct = n(),snowf_missing = sum(is.na(snowf)),snowf_pct_missing = sum(is.na(snowf))/n(),
             snowdep_missing = sum(is.na(snowdep)),snowdep_pct_missing = sum(is.na(snowdep))/n()) -> missingness_df 
+
+missingness_df
+
 snowfall_df %>% 
   group_by(station,name,'year'=year(date)) %>% 
   summarise(ann_max_snowf = max(snowf,na.rm = T)) -> annual_max_snowf_df 
@@ -27,7 +35,6 @@ snowfall_df %>%
 snowfall_df$missing_ts <- 0
 
 snowfall_df$missing_ts[which(is.na(snowfall_df$snowf)==T)] <- 1
-
 
 # Plots
 snowfall_plt <- snowfall_df %>% 
