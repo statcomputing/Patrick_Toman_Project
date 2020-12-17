@@ -30,7 +30,7 @@ AICc <- function(gev_mod,snow_data){
 ########################################################################################
 
 
-full_model_gev_nlme <- function(snow_list,time_list,stationary = T){
+full_model_gev_nlme <- function(snow_list,time_list,n.years = 61,year_return = c(25,50,75,100),stationary = T){
   
   num_stations <- length(snow_list)
   
@@ -180,6 +180,11 @@ full_model_gev_nlme <- function(snow_list,time_list,stationary = T){
   return_mat[3,] <- (fit$estimate[3] + mu_t*(year_return + n.years)/10 - 
                        (fit$estimate[6]/fit$estimate[9])*(1-(-log(1-(1/year_return)))^(-fit$estimate[9])))
   
+  colnames(return_mat) <- as.character(year_return)
+  
+  rownames(return_mat) <- names(snow_list)
+  
+  
   return(list(returns=return_mat, trend=mu_t, output=fit))
   
 }
@@ -190,7 +195,7 @@ full_model_gev_nlme <- function(snow_list,time_list,stationary = T){
 ########################################################################################
 
 
-model1_gev_nlme <- function(snow_list,time_list,stationary = T){
+model1_gev_nlme <- function(snow_list,time_list,year_return = c(25,50,75,100),n.years = 61,stationary = T){
   
   num_stations <- length(snow_list)
   
@@ -320,6 +325,10 @@ model1_gev_nlme <- function(snow_list,time_list,stationary = T){
   return_mat[3,] <- (fit$estimate[3] + mu_t*(year_return + n.years)/10 - 
                        (fit$estimate[4]/fit$estimate[5])*(1-(-log(1-(1/year_return)))^(-fit$estimate[5])))
   
+  colnames(return_mat) <- as.character(year_return)
+  
+  rownames(return_mat) <- names(snow_list)
+  
   return(list(returns=return_mat, trend=mu_t, output=fit))
   
 }
@@ -330,8 +339,8 @@ model1_gev_nlme <- function(snow_list,time_list,stationary = T){
 ###                               at each station
 ########################################################################################
 
-model2_gev_nlme <- function(snow_list,time_list,stationary = T,
-                            groups = list('g1'=c(1),'g2'=c(2,3))){
+model2_gev_nlme <- function(snow_list,time_list,n.years = 61,year_return = c(25,50,75,100)
+                            ,stationary = T,groups = list('g1'=c(1),'g2'=c(2,3))){
   
   num_stations <- length(snow_list)
   
@@ -448,12 +457,17 @@ model2_gev_nlme <- function(snow_list,time_list,stationary = T,
                        (fit$estimate[3]/fit$estimate[4])*(1-(-log(1-(1/year_return)))^(-fit$estimate[4])))
   
   
-  return_mat[2,] <- (fit$estimate[1] + mu_t*(year_return + n.years)/10 - 
+  return_mat[2,] <- (fit$estimate[2] + mu_t*(year_return + n.years)/10 - 
                        (fit$estimate[3]/fit$estimate[4])*(1-(-log(1-(1/year_return)))^(-fit$estimate[4])))
   
   
   return_mat[3,] <- (fit$estimate[2] + mu_t*(year_return + n.years)/10 - 
                        (fit$estimate[3]/fit$estimate[4])*(1-(-log(1-(1/year_return)))^(-fit$estimate[4])))
+  
+  colnames(return_mat) <- as.character(year_return)
+  
+  rownames(return_mat) <- names(snow_list)
+  
   
   return(list(returns=return_mat, trend=mu_t, output=fit,'g1'=g1_name,'g2'=g2_name))
   
@@ -464,7 +478,7 @@ model2_gev_nlme <- function(snow_list,time_list,stationary = T,
 ###                               at each station
 ########################################################################################
 
-model3_gev_nlme <- function(snow_list,time_list,stationary = T){
+model3_gev_nlme <- function(snow_list,time_list,n.years = 61,year_return = c(25,50,75,100),stationary = T){
   
   num_stations <- length(snow_list)
   

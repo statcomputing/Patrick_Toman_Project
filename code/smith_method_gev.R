@@ -93,7 +93,7 @@ model1_gev_smith <- function(model_fit,snow_list,stationary=T){
     
       }else{
       
-      trend_year[i]<-0
+      trend_year[i] <- 0
     
     }
     
