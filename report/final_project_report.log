@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6930 64-bit) (preloaded format=pdflatex 2019.1.26)  18 DEC 2020 13:39
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6930 64-bit) (preloaded format=pdflatex 2019.1.26)  18 DEC 2020 14:03
 entering extended mode
 **./final_project_report.tex
 (final_project_report.tex
@@ -671,44 +671,44 @@ File: final_project_report_files/figure-latex/unnamed-chunk-3-1.pdf Graphic fil
 e (type pdf)
 <use final_project_report_files/figure-latex/unnamed-chunk-3-1.pdf>
 Package pdftex.def Info: final_project_report_files/figure-latex/unnamed-chunk-
-3-1.pdf  used on input line 244.
+3-1.pdf  used on input line 251.
 (pdftex.def)             Requested size: 500.48087pt x 187.68031pt.
 [3]
 
 LaTeX Warning: Reference `eq: gev_parameter_estimates' on page 4 undefined on i
-nput line 318.
+nput line 325.
 
 [4 <./final_project_report_files/figure-latex/unnamed-chunk-3-1.pdf>] [5] [6]
-<./figures/bca_ci_stationary.jpeg, id=123, 451.6875pt x 301.125pt>
+<./figures/bca_ci_stationary.jpeg, id=122, 451.6875pt x 301.125pt>
 File: ./figures/bca_ci_stationary.jpeg Graphic file (type jpg)
 <use ./figures/bca_ci_stationary.jpeg>
 Package pdftex.def Info: ./figures/bca_ci_stationary.jpeg  used on input line 5
-20.
+27.
 (pdftex.def)             Requested size: 451.71394pt x 301.14262pt.
 [7]
-<./figures/bca_ci_nonstationary.jpeg, id=130, 451.6875pt x 301.125pt>
+<./figures/bca_ci_nonstationary.jpeg, id=129, 451.6875pt x 301.125pt>
 File: ./figures/bca_ci_nonstationary.jpeg Graphic file (type jpg)
 <use ./figures/bca_ci_nonstationary.jpeg>
 Package pdftex.def Info: ./figures/bca_ci_nonstationary.jpeg  used on input lin
-e 522.
+e 529.
 (pdftex.def)             Requested size: 451.71394pt x 301.14262pt.
 [8 <./figures/bca_ci_stationary.jpeg> <./figures/bca_ci_nonstationary.jpeg>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 569.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 576.
 [9]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 569.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 576.
 (final_project_report.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 569.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 569.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 576.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 576.
 
 LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 13218 strings out of 492946
- 192933 string characters out of 3135521
- 312959 words of memory out of 3000000
+ 13210 strings out of 492946
+ 192851 string characters out of 3135521
+ 314031 words of memory out of 3000000
  16723 multiletter control sequences out of 15000+200000
- 79120 words of font info for 133 fonts, out of 3000000 for 9000
+ 78741 words of font info for 129 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  35i,11n,38p,821b,413s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/lm/lm-ec.enc}{C:/Program Files/M
@@ -728,9 +728,9 @@ lmr8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmr9.pfb><C:/Progra
 m Files/MiKTeX 2.9/fonts/type1/public/lm/lmri10.pfb><C:/Program Files/MiKTeX 2.
 9/fonts/type1/public/lm/lmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/pub
 lic/lm/lmsy6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/lm/lmsy8.pfb>
-Output written on final_project_report.pdf (9 pages, 521306 bytes).
+Output written on final_project_report.pdf (9 pages, 523008 bytes).
 PDF statistics:
- 272 PDF objects out of 1000 (max. 8388607)
+ 271 PDF objects out of 1000 (max. 8388607)
  61 named destinations out of 1000 (max. 500000)
  14485 words of extra memory for PDF output out of 17280 (max. 10000000)
 
