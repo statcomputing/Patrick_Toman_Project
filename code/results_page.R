@@ -1,6 +1,6 @@
 ########################################################################################
 ##### Name: run_models.R                                                              
-##### Description: Generates all output from report except for plots 
+##### Description: Generates all output from report including plots 
 ########################################################################################
 
 rm(list=ls())
@@ -263,22 +263,22 @@ nonstationary_mod3_ll <- reduced_model3_non_stationary$output$minimum
 k25_stationary_mod1 <- cbind.data.frame("%" = c("2.5%","Median","97.5%"),
                                         "Midway" = stationary_mod1_ci$midway[1,],
                                         "O'hare" = stationary_mod1_ci$ohare[1,],
-                                        "ParkForest" = stationary_mod1_ci$parkforest[1,])
+                                        "Park" = stationary_mod1_ci$parkforest[1,])
 
 k50_stationary_mod1 <- cbind.data.frame("%" = c("2.5%","Median","97.5%"),
                                         "Midway" = stationary_mod1_ci$midway[2,],
                                         "O'hare" = stationary_mod1_ci$ohare[2,],
-                                        "ParkForest" = stationary_mod1_ci$parkforest[2,])
+                                        "Park" = stationary_mod1_ci$parkforest[2,])
 
 k75_stationary_mod1 <- cbind.data.frame("%" = c("2.5%","Median","97.5%"),
                                         "Midway" = stationary_mod1_ci$midway[3,],
                                         "O'hare" = stationary_mod1_ci$ohare[3,],
-                                        "ParkForest" = stationary_mod1_ci$parkforest[3,])
+                                        "Park" = stationary_mod1_ci$parkforest[3,])
 
 k100_stationary_mod1 <- cbind.data.frame("%" = c("2.5%","Median","97.5%"),
                                          "Midway" = stationary_mod1_ci$midway[4,],
                                          "O'hare" = stationary_mod1_ci$ohare[4,],
-                                         "ParkForest" = stationary_mod1_ci$parkforest[4,])
+                                         "Park" = stationary_mod1_ci$parkforest[4,])
 
 stationary_plt_list <- list("K25" = k25_stationary_mod1,"K50" = k50_stationary_mod1,
                             "K75" = k75_stationary_mod1,"K100" = k100_stationary_mod1)
@@ -297,31 +297,31 @@ stationary_plt_df %>%
   group_by(K,Station) %>% 
   ggplot(aes(x = Station,y = `Max Snowfall`,group = Station,color=Station)) + 
   geom_boxplot() + theme_minimal() +
-  theme(legend.position = "bottom") + 
+  theme(legend.position = "bottom",axis.text.x = element_text(angle = 45)) + 
   facet_wrap(~K, nrow = 1, ncol = 4,scales = 'free_x') + 
-  ggtitle("Return Levels for Stationary Model 1")
+  ggtitle("95% Bootstrap CI for Return Levels \n (Stationary)")
 
 # Non-stationary Models
 
 k25_nonstationary_mod1 <- cbind.data.frame("%" = c("2.5%","Median","97.5%"),
                                         "Midway" = nonstationary_mod1_ci$midway[1,],
                                         "O'hare" = nonstationary_mod1_ci$ohare[1,],
-                                        "ParkForest" = nonstationary_mod1_ci$parkforest[1,])
+                                        "Park" = nonstationary_mod1_ci$parkforest[1,])
 
 k50_nonstationary_mod1 <- cbind.data.frame("%" = c("2.5%","Median","97.5%"),
                                         "Midway" = nonstationary_mod1_ci$midway[2,],
                                         "O'hare" = nonstationary_mod1_ci$ohare[2,],
-                                        "ParkForest" = nonstationary_mod1_ci$parkforest[2,])
+                                        "Park" = nonstationary_mod1_ci$parkforest[2,])
 
 k75_nonstationary_mod1 <- cbind.data.frame("%" = c("2.5%","Median","97.5%"),
                                         "Midway" = nonstationary_mod1_ci$midway[3,],
                                         "O'hare" = nonstationary_mod1_ci$ohare[3,],
-                                        "ParkForest" = nonstationary_mod1_ci$parkforest[3,])
+                                        "Park" = nonstationary_mod1_ci$parkforest[3,])
 
 k100_nonstationary_mod1 <- cbind.data.frame("%" = c("2.5%","Median","97.5%"),
                                         "Midway" = nonstationary_mod1_ci$midway[4,],
                                         "O'hare" = nonstationary_mod1_ci$ohare[4,],
-                                        "ParkForest" = nonstationary_mod1_ci$parkforest[4,])
+                                        "Park" = nonstationary_mod1_ci$parkforest[4,])
 
 nonstationary_plt_list <- list("K25" = k25_nonstationary_mod1,"K50" = k50_nonstationary_mod1,
                             "K75" = k75_nonstationary_mod1,"K100" = k100_nonstationary_mod1)
@@ -333,15 +333,14 @@ nonstationary_plt_df %>%
 
 nonstationary_plt_df$K <- factor(as.numeric(gsub("K","",nonstationary_plt_df$K)),labels = paste0("K",c(25,50,75,100)))
 
-
 colnames(nonstationary_plt_df) <- c("K","%","Station","Max Snowfall")
 
 nonstationary_plt_df %>% 
   group_by(K,Station) %>% 
   ggplot(aes(x = Station,y = `Max Snowfall`,group = Station,color=Station)) + 
   geom_boxplot() + theme_minimal() +
-  theme(legend.position = "bottom") + 
+  theme(legend.position = "bottom",axis.text.x = element_text(angle = 45)) + 
   facet_wrap(~K, nrow = 1, ncol = 4,scales = 'free_x') + 
-  ggtitle("Return Levels for Stationary Model 1")
+  ggtitle("95% Bootstrap CI for Return Levels \n (Non-stationary)")
 
 

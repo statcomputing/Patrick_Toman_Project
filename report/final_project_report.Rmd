@@ -16,7 +16,7 @@ geometry: margin = 2cm
 knitr::opts_chunk$set(echo = F,message = F,fig.height = 5,fig.width = 4,fig.align = 'center',dpi = 300)
 ```
 
-```{r,echo=FALSE,message=FALSE}
+```{r}
 library(tidyverse)
 library(lubridate)
 
@@ -30,46 +30,56 @@ snowfall_list <- split(snowfall_df,f = snowfall_df$name)
 
 # Introduction 
 
-In the first 9 months of 2020, there have been 16 extreme weather or climate related events with monetary losses exceeding $1 billion dollars in the united states, tying the annual records set by 2011 and 2017 @smith_2020. One of the most disruptive events, particularly for urbanized areas, are extreme snow events. One question at the forefront of researchers and planners minds is whether or not the frequency and intensity of extreme winter storms is increasing. To that end, @trend_return_levels proposed methods based on \textit{generalized extreme value distributions} for modeling trend and return levels for extreme snow events in New York City using 56 years of annual snowfall data. They found that their modeling framework was useful in modeling explaining extreme snow events in the city. Given Lee and Lee's report success, an obvious line of inquiry would be to assess if this model can be applied to a different geo-spatial location. With this in mind, this report takes the methods from Lee and Lee's paper and applied them to annual snowfall data for Chicago,Illinois, another city that is prone to crippling blizzards. 
+In the first 9 months of 2020, there have been 16 extreme weather or climate related events with monetary losses exceeding $1 billion dollars in the united states, tying the annual records set by 2011 and 2017 @smith_2020. One of the most disruptive events, particularly for urbanized areas, are extreme snow events. One question at the forefront of researchers and planners minds is whether or not the frequency and intensity of extreme winter storms is increasing. To that end, @trend_return_levels proposed methods based on \textit{generalized extreme value distributions} for modeling trend and return levels for extreme snow events in New York City using 56 years of annual snowfall data. They found that their modeling framework was useful in modeling explaining extreme snow events in the city. Given Lee and Lee's reported success, an obvious line of inquiry would be to assess if this model can be applied to a different geo-spatial location. With this in mind, this report takes the methods from Lee and Lee's paper and applies them to annual snowfall data for Chicago, another city that is prone to crippling blizzards. 
 
 # Data 
 
-Daily snowfall data is downloaded from the @ncei_2020 using the Climate Online Data (CDO) tool. Three weather stations are selected from the Chicago Area: Midway, O'Hare, and Park Forest. Table \ref{tab: station_summaries}, gives a geographic description of the three stations. The last 61 years of daily snowfall data from each of the four station is used in the analysis, starting from the dates July 1st,1960 to June 30th, 2020. Daily snowfall is defined as the maximum amount of that has accumulated prior to melting or settling for the day. The snowfall data from NCEI is measured in inches with the amounts being rounded to the nearest tenth of an inch with amounts less than $0.1$ being recored as zeros. Furthermore, $\approx 8 \%$ of the days in our analysis have non-trace snow amounts, we call these \textit{snow events} in our analys. Since major snowfall events are tend to last multiple days, consecutive days with non-zero snowfall are merged to represent one single snow event in the data. In addition, snowfall observation refers to the accumulated snowfall associated with a given storm. Finally, a \textit{snow year} is defined as a one-year period that starts on July 1st to June 30th. For instance, the snow records from July 1st 2012 and June 30th, 2013 would correspond to the 2012 snow year. Note that there are missing observations in the data. For Midway, $< 0.8 \%$ of daily observations are missing, O'Hare is missing $\approx 0.9\%$ of observations and $\approx 8 \%$ are missing for Park Forest. Most of the missingness appears to be concentrated in non-winter months, therefore, the issue of missing data is negligible. 
+Daily snowfall data is downloaded from the @ncei_2020 using the Climate Online Data (CDO) tool. Three weather stations are selected from the Chicago Area: Midway, O'Hare, and Park Forest. More geographic details can be found in table 1 below. The last 61 years of daily snowfall data from each of the three weather stations are used in the analysis, starting from the dates July 1st,1960 to June 30th, 2020. Daily snowfall is defined as the maximum amount of that has accumulated prior to melting or settling for the day. The snowfall data from NCEI is measured in inches with the amounts being rounded to the nearest tenth of an inch with amounts less than $0.1$ being recored as zeros. Furthermore, $\approx 8 \%$ of the days in our analysis have non-trace snow amounts. We refer to these days with non-trace snowfall as \textit{snow events}. Since major snowfall events tend transpire over the course of several, consecutive observations with non-zero snowfall are merged to represent one single snow event,thus, a snowfall observation refers to the accumulated snowfall associated with a given storm. Finally, a \textit{snow year} is defined as a one-year period that starts on July 1st to June 30th. For instance, the snow records from July 1st 2012 and June 30th, 2013 would correspond to the 2012 snow year. Note that there are missing observations in the data. For Midway, $< 0.8 \%$ of daily observations are missing, O'Hare is missing $\approx 0.9\%$ of observations and $\approx 8 \%$ are missing for Park Forest. Most of the missingness appears to be concentrated in non-winter months, therefore, the issue of missing data is negligible. Figure 1 , shows a plot of the annual maximum snowfall at each station for the time period starting July 1st, 1960 and ending June 30th, 2020. 
 
 \begin{table}[ht]
+\label{tab:station_summaries}
 \centering
 \caption{Station Summaries }
-\label{tab: station_summaries}
-\resizebox{\textwidth}{!}{%
+\resizebox{\textwidth}{!}{
 \begin{tabular}{ccccc}
 \hline
 Station & Full Station Name & Latitude & Longitude & Elevation \\ \hline
 Chicago & CHICAGO MIDWAY AIRPORT 3 SW, IL US & 41.74 & -87.78 & 189.00 \\
 Park Forest & PARK FOREST, IL US & 41.49 & -87.68 & 216.40 \\
-O'Hare & CHICAGO OHARE INTERNATIONAL AIRPORT, IL US & 41.96 & -87.93 & 201.80 \\ \hline
-\end{tabular}%
+O'Hare & CHICAGO OHARE INTERNATIONAL AIRPORT, IL US & 41.96 & -87.93 & 201.80  \\ \hline
+\end{tabular}
 }
 \end{table}
+
+```{r,fig.width= 7.5}
+
+snowfall_df %>% 
+  ggplot(aes(x=as.numeric(year),y=ann_max_snowf,color=name)) +
+  geom_line() + theme_minimal() + theme(legend.position = 'none',axis.text.x = element_text(angle = 45,hjust = 1))+
+  xlab('Date')+ylab('Maximum Snowfall (inches)')+ ggtitle('Figure 1 - Annual Maxes')+
+  facet_wrap(~name,nrow = 3,scales = 'free_y')
+
+```
 
 # Methods 
 
 ## Block Maxima Methods for GEV 
 
-Let $X_1,\ldots,X_k$ be independent and identically distributed IID random variables that have the common CDF $F(.)$. Next, let us define $M^{(k)} = max\left\{X_1,\ldots,X_k\right\}$ as the maximum order statistic for a \textit{block} of $k$ these random variables. Suppose then that there are a set of constants $\{a_k\}$ and $\{b_k\}$ with $b_k > 0 \ \forall k$ so that scale $M^{(k)}$ such that 
+Let $X_1,\ldots,X_k$ be independent and identically distributed random variables that have the common CDF $F(.)$. Next, let us define $M^{(k)} = max\left\{X_1,\ldots,X_k\right\}$ as the maximum order statistic for a \textit{block} of $k$ these random variables. Suppose then that there are a set of constants $\{a_k\}$ and $\{b_k\}$ with $b_k > 0 \ \forall k$ such that   
 
 \begin{equation}
   \label{eq: gev_thm}
   P\left(\frac{ M^{(k)} - a_k }{b_k} \le x \right) \to G(x) \ \text{for} \ k \to \infty
 \end{equation}
 
-where $G(.)$ is a non-degenerate distribution function. Then according to the Fisher-Tippett-Gnedenko theorem, $G(.)$ follows one of these distribution families: Gumbel,Frechet, or Weibull @trend_return_levels. Furthermore, these families can be further generalized using the \textit{generalized extreme value} (GEV) distribution function 
+where $G(.)$ is a non-degenerate distribution function. Then according to the Fisher-Tippett-Gnedenko theorem, $G(.)$ follows one of these distribution families: Gumbel,Frechet, or Weibull. These three families can then be further generalized into the \textit{generalized extreme value}(GEV) family of distributions where we have
 
 \begin{equation}
   \label{eq: gev_cdf}
   G(x) = exp\left\{- \left[1 + \xi(\frac{x - \mu}{\sigma})\right]_{+}^{\frac{-1}{\xi}}\right\}
 \end{equation}
 
-where $z_{+} = max\{z,0\}, \mu \in \mathcal{R},\sigma \in \mathcal{R}^{+}, \ \text{and} \ \xi \in \mathcal{R}^{+}$. In application settings, block maxima methods rely on a sequence of of maximum order statistics from a CDF $F(.)$. If the block sizes are large enough, then the GEV theorem states that  In our case, each snow year is treat as a block and then we extract the maximum snowfall statistic from each snowfall year for each station as our extreme event for that year. 
+where $z_{+} = max\{z,0\}$, and we have unknown real valued parameters $\mu \in \mathcal{R},\sigma \in \mathcal{R}^{+}, \ \text{and} \ \xi \in \mathcal{R}^{+}$ referred to as location,scale,and shape parameters,respectively. In applied settings, block maxima methods rely on a sequence of of maximum order statistics from a CDF $F(.)$. If we have a random sample $\mathbf{X} = \{X_1,\ldots,X_n\}$ then we can attain a series of block maxima from this data by dividing $\mathbf{X}$ into $k$ non-overlapping blocks and then finding the maximum within each block to attain $\mathbf{M} = \left\{M_1,\ldots,M_k\right\}$, a $k$-dimensional set of block maxima.  If the block sizes are large enough, then the GEV family of   that  In our case, each snow year is treat as a block and then we extract the maximum snowfall statistic from each snowfall year for each station as our extreme event for that year. In our particular case, we treat each snow year as a block, thus, $M_i, \ i = 1960,\ldots,2020$ is the maximum snowfall event for a given snow year.
 
 ## Maximum Likelihood for GEV Models
 
@@ -80,7 +90,7 @@ Assume that we have $\xi \ne 0$. If $X_1,\ldots,X_N \overset{iid}{\sim} GEV(\The
   ln\left(\Theta|\mathbf{X}\right)  = -Nln(\sigma) + \left(\frac{1}{\xi}+1\right)\sum_{i=1}^{N}\left(1 \xi\left(\frac{x_i - \mu}{\sigma}\right)\right) - \sum_{i=1}^{N}\left(1 + \xi\left(\frac{x_i - \mu}{\sigma}\right)\right)
 \end{equation}
 
-assuming that $1 + \xi\left(\frac{x_i - \mu}{\sigma}\right) > 0$. Further information can be found in @statistics_of_extremes. Indeed, parameter estimates can be obtained by numerical estimation methods such as Newton-Raphson. Expressions for the gradient can be found the appendix \textcolor{red}{possibly remove}.  In this project, we use the standard \textit{optim()} or \textit{nlme()} function found in the R programming language.
+assuming that $1 + \xi\left(\frac{x_i - \mu}{\sigma}\right) > 0$. Further information can be found in @statistics_of_extremes. Of course, parameter estimates can be obtained by numerical estimation methods such as Newton-Raphson.  In this analysis, we use the standard \textit{nlme()} function found in the R programming language for maximum likelihood estimation.
 
 ## Return Levels 
 
@@ -96,9 +106,9 @@ Some of the most important quantities in any extreme values analysis are the ret
 
 Invoking the invariance property of MLEs, we can solve for the MLE of the return level $\hat{X}_k$ by simply substituting the MLEs for $(\mu,\sigma,\xi)$ attained through Newton-Raphson. 
 
-## Smith's Method for Spatial and Temporal Dependence
+## Standard Error Correction for Spatial and Temporal Dependence
 
-Snowfall data collected from stations close in proximity to one another will inevtiably exhibit spatial correlation. To account for this spatial correlation in our standard errors, we can employ a method devised by Smith @smith_1990 where MLE estimates are attained under the standard IID assumption and then standard errors are corrected in a post-hoc fashion to account for spatial dependence. \textcolor{red}{More information about this method can be found in the appendix}. Furthermore, for block maxima methods, temporal dependence is typically not an issue since annual maxima tend to be separated by a large gap of time. To confirm this,we calculate the ACF of the annual maxima series for each station and find that there is no statistically significant auto-correlation for the $\alpha = 0.05$ level. 
+Snowfall data collected from stations close in proximity to one another will typically exhibit spatial correlation. To account for this spatial correlation in our standard errors, we can employ a method devised by Smith @smith_1990 where MLE estimates are attained under the standard IID assumption and then standard errors are corrected in a post-hoc fashion to account for spatial dependence.  More information about this method can be found in the appendix. Note that for block maxima methods, temporal dependence is typically not an issue since annual maxima tend to be separated by a large gap of time. To confirm this,we calculate the ACF of the annual maxima series for each station and find that there is no statistically significant auto-correlation for the $\alpha = 0.05$. 
 
 ```{r,fig.height = 3,fig.width = 8}
 par(mfrow = c(1,3))
@@ -133,13 +143,13 @@ where $\tilde{x}^{(-t)}_{K}$ denotes the delete-1 jacknife estimate of $x_K$ whe
 
 # Implementation and Results
 
-Using the notation from @trend_return_levels, let $N_{s}$ denote the number of snowstorms that occured at station $s$ during the study period from July 1st, 1960 to June 30th, 2020. If we let $\mathbf{X} = \left\{X_{s,1},\ldots,X_{s,N_s}\right\}$ represent the the accumulated snowfall observed at station $s$ where $X_{s,j}, \ j \in {1,\ldots,N_S}$ denotes the accumulated snowfall for snowstorm $j$ during the study period. Next, if we denote $M_{s,t}$ denote the maximum for each snow year $t \in \{1960,\ldots,2020\}$, then we have $M_{s,t} \sim GEV(\mu_s,\sigma_s,\xi_s)$.  Using the block maxima methods described in the [Methods] section, we fit several different models and compare them using Akaike's Corrected Information Criterion (AICc) where $AICc = 2\left( p - \ell(\hat{\Theta}) + \frac{p(p+1)}{n - p+1}\right)$ where $p$ is the number of parameters, $\ell(\hat{\Theta})$ denotes the value of the log-likelihood evaluated at the MLE, and $n$ is the number of observations. Models with smaller AICc are preferred. In addition, we calculate $100\cdot(1-\alpha)\% , \alpha = 0.05$ CI BCa intervals for return levels $X_k, K = \left\{25,50,75,100\right\}$ using $B = 10000$ replications for all six reduced models mentioned in table \ref{eq: gev_parameter_estimates}. 
+Using the notation given by @trend_return_levels, let $N_{s}$ denote the number of snowstorms that occured at station $s$ during the study period from July 1st, 1960 to June 30th, 2020. If we let $\mathbf{X} = \left\{X_{s,1},\ldots,X_{s,N_s}\right\}$ represent the the accumulated snowfall observed at station $s$ where $X_{s,j}, \ j \in {1,\ldots,N_S}$ denotes the accumulated snowfall for snowstorm $j$ during the study period. Next, if we denote $M_{s,t}$ denote the maximum for each snow year $t \in \{1960,\ldots,2020\}$, then we have $M_{s,t} \sim GEV(\mu_s,\sigma_s,\xi_s)$.  Using the block maxima methods described in the [Methods] section, we fit several different models and compare them using Akaike's Corrected Information Criterion (AICc) where $AICc = 2\left( p - \ell(\hat{\Theta}) + \frac{p(p+1)}{n - p+1}\right)$ where $p$ is the number of parameters, $\ell(\hat{\Theta})$ denotes the value of the log-likelihood evaluated at the MLE, and $n$ is the number of observations. Models with smaller AICc are preferred. In addition, we calculate $100\cdot(1-\alpha)\% , \alpha = 0.05$ CI BCa intervals for return levels $X_k, K = \left\{25,50,75,100\right\}$ using $B = 10000$ replications for all six reduced models mentioned in table \ref{eq: gev_parameter_estimates}. 
 
 ## Models
 
 Initially, we build a full model in which we assume that each station has its own location, shape, and scale parameters. In other words, we have $\Theta_s = (\mu_s,\sigma_s,\xi_s), s = 1,2,3$.  The AICc of this model is $-884.1794$. Next, we build a model where $\mu_s$ is fit individually for each station but $\sigma$ and $\xi$ are assumed to be the same for all three locations. For the reduced model, we find that the AICc is $-895.6098$. Therefore, we prefer the reduced model where $\mu_s$'s are assumed to be different for the stations but $\sigma$ and $\xi$ are assumed common. 
 
-Having established that $\sigma$ and $\xi$ should be common to all three stations, three different stationary models, one with a distinct $\mu_s$ for all three locations, the second where we merge the two closest $\mu_s$'s from the first model, and then a final model where $\mu_s$ is assumed to be the same across all three equations. In all three cases, maximum likelihood estimates are obtained using Newton-Raphson via the \textit{nlme()} function in R. Naive standard errors are obtained for these models by inverting the hessian returned from \textit{nlme()}. To account for spatial correlation in the standard errors, we implement Smith's method. Indeed, we find that the corrected standard errors are larger than the naive standard errors, indicating that there is some measure of spatial correlation in the annual maxima series as anticipated. Observe that the estimates for $\xi$ are quite small relative to their standard error with the largest $\frac{\hat{\xi}}{se(\hat{\xi})} \approx 1$, thus, it is likely reasonable to conclude that $\xi$ is not statistically different from zero. More details can be found in table \ref{tab: gev_parameter_estimates}. 
+Having established that $\sigma$ and $\xi$ should be common to all three stations, three different stationary models, one with a distinct $\mu_s$ for all three locations, the second where we merge the two closest $\mu_s$'s from the first model, and then a final model where $\mu_s$ is assumed to be the same across all three equations. In all three cases, maximum likelihood estimates are obtained using Newton-Raphson via the \textit{nlme()} function in R. Naive standard errors are obtained for these models by inverting the hessian returned from \textit{nlme()}. To account for spatial correlation in the standard errors, we implement Smith's method. Indeed, we find that the corrected standard errors are larger than the naive standard errors, indicating that there is some measure of spatial correlation in the annual maxima series as anticipated. Observe that the estimates for $\xi$ are quite small relative to their standard error with the largest $\frac{\hat{\xi}}{se(\hat{\xi})} \approx 1$. Appealing to asymptotic normality results, we can conclude that $\xi$ is not statistically different from 0 at the $\alpha = 0.05$ level. More details can be found in table \ref{tab: gev_parameter_estimates}. 
 
 Next, because of the possibility of a a linear trend in the data, a set of non-stationary models are fit following the same structure as the stationary models except we now model the location parameters $\mu_s$ as a function of time. Following the example of @trend_return_levels, we have 
 
@@ -148,7 +158,7 @@ Next, because of the possibility of a a linear trend in the data, a set of non-s
   \mu_{s,t} = \mu_s + \beta\left(\frac{t - 1960}{10}\right), \ t = 1960,\ldots,2020
 \end{equation}
 
-where $\beta$ is a trend parameter that captures the expected in maximum snowfall over a decade. It is assumeth that trend is the same for all three stations in our analysis. The non-stationary parameter estimates are quite similar to the stationary estimates. In addition, we find that the trend paramter $\beta$ is not statistically different from zero at the $\alpha = 0.05$ level, thus, we can reasonably conclude that there is not a long-term trend in the maximum snowfall for Chicago in this time frame. Once again, more details are given in table \ref{tab: gev_parameter_estimates}.
+where $\beta$ is a trend parameter that captures the expected in maximum snowfall over a decade. It is assumeth that trend is the same for all three stations in our analysis. The non-stationary parameter estimates are quite similar to the stationary estimates. In addition, by invoking asymptotic properties of the MLE, we can conclude that trend parameter $\beta$ is not statistically different from zero at the $\alpha = 0.05$ level, thus, we can reasonably conclude that there is not a long-term trend in the maximum snowfall for Chicago in this time frame. Once again, more details are given in the table 2 below.
 
 
 \begin{table}[ht]
@@ -174,9 +184,68 @@ where $\beta$ is a trend parameter that captures the expected in maximum snowfal
 
 ## Bootstrap Return Levels
 
-We present BCa return levels for both the stationary and non-stationary versions model 1. Model 1 is chosen since there are not substantial differences in the AICc values for the models, however, there does seem to be some differences in the location the location parameters that are worth exploring. Using figures \textcolor{red}{cite figures}, we can draw several inferences, First, we observe that the 95\% CI is fairly similar for both models though it is a bit wider for the trend model. This helps to corroborate our findings that the trend parameter $\beta$ is not statistically different from 0, thus, indicating that there is no long term trend in the annual maximum snowfall. Furthermore, the CI plots indicate that we can expect a snowstorm that dumps $\approx 15$ inches of snow to occurs once every 50 years or so in the chicago area. Finally, we observe that the return median return levels for all periods are higher for Midway than for the other two sites. 
-
+We present results on the BCa return levels for both the stationary and non-stationary versions  of model 1. Model 1 is chosen since there are not substantial differences in the AICc values for the models, however, there does seem to be some differences in the location the location parameters that are worth exploring. First, we observe that the 95\% CI is fairly similar for both models though it is a bit wider for the trend model. This helps to corroborate our findings that the trend parameter $\beta$ is not statistically different from 0, thus, indicating that there is no long term trend in the annual maximum snowfall. Furthermore, the CI plots indicate that we can expect a snowstorm that dumps $\approx 15$ inches of snow or more occurs once every 25 years or so in the chicago area. When we compare this to the actuall data, we do see that such snowstorms do seem to occurs once every 25 years or so. Finally, we observe that the return median return levels for all periods are higher for Midway than for the other two sites.  
 
 # Conclusions and Further Work
+
+In this report, we investigated whether or not the block maxima methods presented by @trend_return_levels could be applied to a different dataset of annual maximum snowfall series from Chicago. Overall, we corroborate many of the same findings for the Chicago area. Foremost, we find that there is indeed a fair amount of spatial correlation in the data, thus demonstrating th need for application of Smith's method. Furthermore, we find that for Chicago there is not a statistically significant trend in the annual maximum snowfall event across the study period. Finally, we found that the bias corrected bootstrap is effective in giving us more accuarate assessments of the uncertainty in $K$-year return levels.
+
+The analysis in this report also helps to reveal further possible avenues of inquiry. First, Lee and Lee also presented in their work a threshold exceedance model  where snowfall events exceeding a certain threshold are modeled using a generalized pareto distribution. Such a model helps to add information by incorporating large snowfall events other than just the annual maximum. Applying this method to the Chicago data may reveal new findings about the nature of blizzards in the Chicago area. In addition, it would be interesting to apply this method to other extreme weather data such as wind speeds, rainfall, and temperatures. Finally, our model only incorporated a trend covariate for a subset of the models, it would be prudent to investigate if any other covariates have a significant relationship with extreme snowfall events.  
+
+
+# Appendix 
+
+## Smith's Method
+
+Suppose that we have multiple weather stations in the same region, each with $t$ years of recorded snowfall. The log-likelihood for the vector of unknown parameters $\Theta = \left(\theta_1,\ldots,\theta_p\right)^T$ using all stations' data as for all years $t$ can be expressed as
+
+\begin{equation*}
+  \label{eq: smith_ll}
+  \ell_{t}(\Theta) = \sum_{i = 1}^{t}h_t\left(\Theta\right)
+\end{equation*}
+
+where $h_i(\Theta)$ is the contribution of to the log-likelihood of all $s$ stations for the $t^{th}$ year, independent of the other $t$ years. Let $\hat{\Theta} = \left(\hat{\theta}_1,\ldots,\hat{\theta}_p\right)^T$ denote the maximum likelihood estimate of $\Theta$ and let $\Theta_0$ denote the true value of $\Theta$. Taylor expansion of the log-likelihood yields 
+
+\begin{equation*}
+  \label{eq: smith_taylor}
+  \hat{\Theta} - \Theta_0 \approx \left\{- \nabla^{2} \ell_{t}(\Theta_0)\right\}^{-1}\nabla \ell_{t}(\Theta_0)
+\end{equation*}
+
+where $nabla$ denotes the gradient and $\nabla^2$ denotes the hessian. We can approximate the entries of the hessian matrix using expected values, thus we have 
+
+\begin{equation*}
+  \label{eq: smith_cov_mle}
+  cov(\hat{\Theta}) \approx H^{-1}VH^{-1}
+\end{equation*}
+
+where $H =  - E\left[\nabla^2 \ell_{t}(\Theta_0) \right]$ and $V = cov\left(\nabla \ell_t(\Theta_0)\right)$. Assuming that there was no spatial correlation in the data, we would simply have 
+
+\begin{equation*}
+  cov(\hat{\Theta}) \approx H^{-1}
+\end{equation*}
+
+where $H$ is approximated by the \textit{observed fisher information} $- \nabla^2\ell_{t}(\hat{\Theta})$. Furthemore, suppose that the time series data that contribute to $\ell_{t}(\Theta)$ are dependent but each $h_i(\Theta)$ are independent. In addition, assume that $h_i(\Theta)$ share a common distribution. Unde these two asumptions, we can express the gradient of $\ell_{t}(\Theta)$ as a sum of independent terms as follows
+
+\begin{equation*}
+  \nabla \ell_{t}(\Theta) = \sum_{i=1}^{t}\nabla h_i(\Theta)
+\end{equation*}
+
+The covariance matrix of $\nabla h_i(\Theta_0)$ can be approximated by the empirical covariance matrix of $\nabla h_i(\hat{\Theta}), \  \forall \ i \in \{1,\ldots,t\}$ and setting. 
+
+$$V = n \nabla h_1(\Theta)$$
+
+If we combine this expression with the observed information matrix as an estimator of $H$, we can recover the expression
+
+$$cov(\Theta) = H^{-1}VH^{-1}$$
+
+in a computationally simple manner. More details are given by @smith_1990.
+
+## BCa Return Level CI
+
+```{r bca_return_levels}
+knitr::include_graphics(c("./figures/bca_ci_stationary.jpeg","./figures/bca_ci_nonstationary.jpeg"))
+
+```
+
 
 # References
